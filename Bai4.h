@@ -11,6 +11,19 @@ std::vector<std::tuple<int, int, double>> getChains(
     std::vector<std::vector<TimeExpandedNode*>> graph, 
     Point* origin ) {
 
+	std::vector<std::tuple<int, int, double>> res;
+
+	for(int i = 0; i < graph.size(); i++) {
+		vector<TimeExpandedNode*> v = graph.at(i);
+
+		for(int j = 0; j < v.size(); j++) {
+			TimeExpandedNode* curr = v.at(j);
+			if(curr->origin->equals(origin)) {
+				res.push_back(std::make_tuple(i, j, curr->time));
+			}
+		}
+	}
+	return res;
 }
 
 //// cau b
@@ -98,7 +111,8 @@ std::vector<std::pair<int, int>> insert(
 
 bool checkInsertion(std::vector<std::vector<TimeExpandedNode*>> graph, 
 	std::vector<std::pair<int, double>> newChains, 
-		TimeExpandedNode* p){
+	TimeExpandedNode* p){
+
 	for(auto elem : newChains){
 		if(!isAvailable(graph, p->origin, elem.second)){
 			return false;
@@ -211,8 +225,60 @@ std::vector<std::vector<TimeExpandedNode*>> connectChains(
 
 
 //// cau g
-void runBai4(){
-    
+void runBai4(int H, double v){
+
+	//// Buoc1 (doc Allpart.txt)
+    TENodeAlgorithm* a = new TENodeAlgorithm();
+    a->runRead();
+
+	//// Buoc2
+
+	//// Buoc3
+	vector<int> initializations = getStartedNodes(allTENs);
+
+	//// Buoc4 
+	for(auto index : initializations){
+		spread(allTENs, index, H, v);
+	}
+
+	//// Buoc5
+	std::vector<std::pair<int, int>> redundants = filter(allTENs, v);
+	remove(redundants, allTENs);
+
+	//// Buoc6
+
+	//// Buoc7
+
+
+	//// Buoc8
+	for(auto index : initializations){
+		TimeExpandedNode* temp = allTENs.at(0).at(index);
+		std::vector<std::tuple<int, int, double>> chains = getChains(allTENs, temp->origin);
+		std::vector<std::pair<int, double>> newChains = createNewChains(chains, allTENs, H, v);
+		std::vector<std::pair<int, int>> newPos = insert(allTENs, newChains, temp);
+		assert(checkInsertion(allTENs, newChains, temp)); 
+		assert(checkResult(allTENs, newChains, newPos, temp));
+		for(auto elem : newPos){
+			spread(allTENs, elem.first, elem.second, v);
+		}
+		std::vector<std::pair<int, int>> newOrder = merge(chains, newPos);
+		connectChains(allTENs, newOrder);
+	}
+
+	//// Buoc9
+	redundants = filter(allTENs, v);
+	remove(redundants, allTENs);
+
+	//// Buoc10
+
+	//// Buoc11
+
+	//// Buoc12
+
+
+
+
+
 }
 
 

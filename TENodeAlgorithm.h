@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <iomanip>
 #include "pugixml.h"
+#include "element.h"
 
 typedef std::pair<double, double> PointElement;
 typedef std::tuple<PointElement, PointElement, double> ShapeElement;
@@ -30,6 +31,11 @@ typedef std::tuple<std::string, int, ShapeElement> Part;
 using namespace std;
 
 inline ofstream outFile;
+
+vector<Point *> P;
+vector<Shape *> S;
+vector<vector<TimeExpandedNode *>> allTENs;
+vector<TimeExpandedNode *> tempTENs;
 
 class TENodeAlgorithm {
 public:

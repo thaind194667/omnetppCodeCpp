@@ -6,14 +6,13 @@
  */
 
 #include "TENodeAlgorithm.h"
-#include "element.h"
 
 //using namespace std;
 
-vector<Point *> P;
-vector<Shape *> S;
-vector<vector<TimeExpandedNode *>> allTENs;
-vector<TimeExpandedNode *> tempTENs;
+// vector<Point *> P;
+// vector<Shape *> S;
+// vector<vector<TimeExpandedNode *>> allTENs;
+// vector<TimeExpandedNode *> tempTENs;
 //TENodeAlgorithm::TENodeAlgorithm() {
 //    // TODO Auto-generated constructor stub
 //
