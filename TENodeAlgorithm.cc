@@ -41,6 +41,7 @@ void convertToStruct() {
     //cout<<"End of first nested-for loops"<<endl;
     //cout<<"allTENs.at(0).size( ) = "<<allTENs.at(0).size()<<endl;
 
+    int counter = 0;
     for (TimeExpandedNode *nA : allTENs.at(0))
     {
         for (TimeExpandedNode *nB : allTENs.at(0))
@@ -49,6 +50,10 @@ void convertToStruct() {
             vector<pair<int, int>> nB_to_nA;
             if (!nA->equals(nB))
             {
+                counter++;
+                if (counter % (10 * 1000 * 1000) == 0)                 {
+                    cout << counter << endl;
+                }
                 nB_to_nA = getConcidences(&(nA->srcs), &(nB->tgts));
                 nA_to_nB = getConcidences(&(nB->srcs), &(nA->tgts));
                 nA->insertSourcesAndTargets(nB, nB_to_nA, nA_to_nB);

@@ -19,6 +19,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "Constant.h"
 
 using namespace std;
 
@@ -67,9 +68,6 @@ public:
     double d;
     string name;
     double time;    /// add in bai3
-    double getTime() {  /// add in bai3
-        return this->time;
-    }
 
     void setName(string name)
     {
@@ -84,6 +82,16 @@ public:
     {
         this->start = start;
         this->end = end;
+    }
+
+    virtual double getTime()
+    {
+        if (time == 0)
+        {
+            Constant const_v;
+            time = this->d / const_v.v; // Với v là hằng số của lớp Constant
+        }
+        return time;
     }
 
 
@@ -130,7 +138,8 @@ public:
         this->origin = origin;
         this->time = time;
         for(auto it : tgts){
-            this->tgts.push_back(make_pair(new TimeExpandedNode(), it.second));
+            this->tgts.push_back(it);
+            // this->tgts.push_back(make_pair(new TimeExpandedNode(), it.second));
         }                        
     }
 

@@ -230,24 +230,32 @@ void runBai4(int H, double v){
 	//// Buoc1 (doc Allpart.txt)
     TENodeAlgorithm* a = new TENodeAlgorithm();
     a->runRead();
+	cout<< "Done step 1\n";
 
 	//// Buoc2
+	cout<< "Done step 2\n";
 
 	//// Buoc3
 	vector<int> initializations = getStartedNodes(allTENs);
+	cout<< "Done step 3\n";
 
 	//// Buoc4 
 	for(auto index : initializations){
 		spread(allTENs, index, H, v);
 	}
+	cout<< "Done step 4\n";
 
 	//// Buoc5
 	std::vector<std::pair<int, int>> redundants = filter(allTENs, v);
 	remove(redundants, allTENs);
+	cout<< "Done step 5\n";
 
 	//// Buoc6
+	cout<< "Done step 6\n";
 
 	//// Buoc7
+	assertTime(allTENs, 0);
+	cout<< "Done step 7\n";
 
 
 	//// Buoc8
@@ -264,22 +272,37 @@ void runBai4(int H, double v){
 		std::vector<std::pair<int, int>> newOrder = merge(chains, newPos);
 		connectChains(allTENs, newOrder);
 	}
+	cout<< "Done step 8\n";
 
 	//// Buoc9
 	redundants = filter(allTENs, v);
 	remove(redundants, allTENs);
+	cout<< "Done step 9\n";
 
 	//// Buoc10
+	cout<< "Done step 10\n";
 
 	//// Buoc11
+	assertTime(allTENs, 0);
+	cout<< "Done step 11\n";
 
 	//// Buoc12
+	int count_TEN = 0;
+    for (vector<TimeExpandedNode *> it : allTENs)
+    {
+        for (TimeExpandedNode *TENode : it)
+        {
+            count_TEN++;
+        }
+    }
+    cout << "Number of TENode in allTENS: " << count_TEN << endl;
+	cout<< "Done step 12\n";
 
-
-
+	cout<< "Done Bai 4\n";
 
 
 }
+
 
 
 #endif
