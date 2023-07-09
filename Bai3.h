@@ -1,5 +1,5 @@
-#ifndef _BAI3_H_
-#define _BAI3_H_
+// #ifndef _BAI3_H_
+// #define _BAI3_H_
 
 #include "TENodeAlgorithm.h"
 // #include "element.h"
@@ -44,6 +44,16 @@ bool isAvailable(std::vector<std::vector<TimeExpandedNode*>> graph, double time,
     }
     *index = 0;
     return true;
+    // int count = 0;
+    // for(auto& it : graph.at(*index))
+    // {
+    //     if(it->time == time) count++;
+    // }     
+    // if(count == graph.at(*index).size()) {return true;}
+    // else{
+    //     index = index + 1;
+    //     return false;
+    // }
 }
 //// cau d
 void insert(std::vector<std::vector<TimeExpandedNode*>> graph, TimeExpandedNode *ten) {
@@ -56,6 +66,19 @@ void insert(std::vector<std::vector<TimeExpandedNode*>> graph, TimeExpandedNode 
     vector<TimeExpandedNode *> tempTEN;
     tempTEN.push_back(ten);
     graph.push_back(tempTEN);
+    // int count = 0;
+     
+    // for(auto& it :graph) {
+    //     if(ten->time == it.at(0)->time) {
+    //         count++;
+    //         it.push_back(ten);
+    //     }
+    // }
+    // if(count  == 0){
+    //     vector<TimeExpandedNode*> newvector;
+    //     newvector.push_back(ten);
+    //     graph.push_back(newvector);
+    // }
 }
 
 //// cau f
@@ -108,6 +131,42 @@ void spread(vector<vector<TimeExpandedNode *>> &graph, int m, int n, double H)
     }
     cout << "count: " << count << endl;
     cout << "Spread_3" << endl;
+    /*
+    TimeExpandedNode* node = graph[m][n];
+    std::queue<TimeExpandedNode*> Q;
+    Q.push(node);
+    
+    while (!Q.empty()) {
+        TimeExpandedNode* temp = Q.front();
+        Q.pop();
+        
+        for (auto& pair : temp->tgts) {
+            Shape* s = pair.second;
+            double time = temp->time + s->getTime();
+            if (time < H) {
+                Point* origin = s->end;  TimeExpandedNode* n = pair.first;
+                TimeExpandedNode* foundItem = isAvailable(graph, origin, time);
+                if (foundItem == nullptr) {
+                    TimeExpandedNode* newNode = new TimeExpandedNode();
+                    newNode->setTENode(origin);
+                    newNode->time= time;
+                    newNode->tgts = n->tgts;
+                    pair.first = newNode;
+                    foundItem = newNode;
+                }
+                int index = foundItem->indexInSources(s);
+                if (index != -1) {
+                    foundItem->srcs[index].first = temp;
+                }
+                else {
+                    foundItem->srcs.push_back(std::make_pair(temp, s));
+                }
+                insert(graph, foundItem); // Gọi hàm đã làm ở câu (d)
+                Q.push(foundItem);
+            }
+        }
+    }
+    */
 }
 
 //// cau e'
@@ -125,6 +184,28 @@ std::vector<std::pair<int, int>> filter(std::vector<std::vector<TimeExpandedNode
         count++;
     }
     return filters;
+    // vector<std::pair<int,int>> a;
+    // int i,k;
+    // for(i = 0;i<graph.size();i++)
+    // {
+    //     for(k=0;k<graph[i].size();k++)
+    //     {
+    //        int count  = 0;
+    //        for(auto& it : graph.at(i).at(k)->srcs)
+    //        {
+    //         if(it.first->time+it.second->getTime() > graph.at(i).at(k)->time){
+    //           count++;
+    //           //a.push_back(make_pair(i,k));
+    //         }
+            
+    //        }
+    //        if(count > 0)
+    //         {
+    //          a.push_back(make_pair(i,k));
+    //         }  
+    //     }
+    // }
+    // return a;
 }
 
 
@@ -155,6 +236,22 @@ std::vector<int> getStartedNodes(std::vector<std::vector<TimeExpandedNode*>> gra
     }
 
     return result;
+    // std::vector<int> a;
+    // int k ;
+    // for(auto& it : graph)
+    // {
+    //     for(k = 0;k<it.size();k++)
+    //     {
+    //         if(it[k]->srcs.empty())
+    //         {
+    //             if(it[k]->time==0)
+    //             {
+    //                 a.push_back(k);
+    //             }
+    //         }
+    //     }
+    // }
+    // return a;
 }
 
 
@@ -167,11 +264,56 @@ void assertTime(vector<vector<TimeExpandedNode*>> graph, double v) {
             {
                 for (auto elem : TENode->srcs)
                 {
-                    assert(elem.first->time + elem.second->getTime() == TENode->time);
+                    assert(elem.first->time + elem.second->getTime() != TENode->time);
                 }
             }
         }
     }
+    // int stage  = 0;
+    // for(auto& it : graph)
+    // {
+    //     int count = 0;
+    //     for(auto& a : it->srcs)
+    //     {
+    //         if(a.first->time + a.second->getTime() !=  it->time) count++;
+    //     }
+    //     if(count != 0) { //cout<<count<<endl;
+    //         stage =1;}
+    // }
+    // if(stage == 1) cout<<"Error assertTime"<<endl;
 }
 
-#endif
+void runBai3() {
+    TENodeAlgorithm* a = new TENodeAlgorithm();
+    a->runRead();
+    vector<int> initializations = getStartedNodes(allTENs);
+    cout << "End of 3 nested-for loop" << endl;
+
+    for (auto index : initializations)
+    {
+        spread(allTENs, 0, index, 1000);
+    }
+    sortGraph(allTENs);
+    cout << "End of 4 nested-for loop" << endl;
+
+    vector<pair<int, int>> redundants = filter(allTENs, 0);
+    cout << "End of 5 nested-for loop" << endl;
+
+    remove(redundants, allTENs);
+    cout << "End of 6 nested-for loop" << endl;
+
+    assertTime(allTENs, 0);
+    cout << "End of 7 nested-for loop" << endl;
+
+    int count_TEN = 0;
+    for (vector<TimeExpandedNode *> it : allTENs)
+    {
+        for (TimeExpandedNode *TENode : it)
+        {
+            count_TEN++;
+        }
+    }
+    cout << "Number of TENode in allTENS: " << count_TEN << endl;
+}
+
+// #endif

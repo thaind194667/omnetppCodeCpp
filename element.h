@@ -88,8 +88,9 @@ public:
     {
         if (time == 0)
         {
-            Constant const_v;
-            time = this->d / const_v.v; // Với v là hằng số của lớp Constant
+            time = 1;
+            // Constant const_v;
+            // time = this->d / const_v.v; // Với v là hằng số của lớp Constant
         }
         return time;
     }
