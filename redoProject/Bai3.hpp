@@ -85,7 +85,7 @@ void spread(std::vector<std::vector<TimeExpandedNode*>> &graph, int m, int n, do
                 Point* origin = s->end;  TimeExpandedNode* n = pair.first;
                 TimeExpandedNode* foundItem = isAvailable(graph, origin, time);
                 if (foundItem == nullptr) {
-                    TimeExpandedNode* newNode = new TimeExpandedNode;
+                    TimeExpandedNode* newNode = new TimeExpandedNode();
                     newNode->setTENode(origin);
                     newNode->time= time;
                     newNode->tgts = n->tgts;

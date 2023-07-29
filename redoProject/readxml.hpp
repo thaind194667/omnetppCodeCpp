@@ -237,7 +237,7 @@ void makeallpart(){
             }
          }
     }
-    double x = 7.8;
+    double x = 10;
     for (edge e : edges)
     {
         splitEdge(x, &e);

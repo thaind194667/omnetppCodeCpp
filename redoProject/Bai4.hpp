@@ -68,18 +68,16 @@ std::vector<std::pair<int, double>> createNewChains(
 std::vector<std::pair<int, int>>insert(std::vector<std::vector<TimeExpandedNode*>> &graph, std::vector<std::pair<int, double>> newChains, TimeExpandedNode* p)
 {
     std::vector<std::pair<int, int>> result;
-    TimeExpandedNode * newNode = new TimeExpandedNode;
-    std::vector<TimeExpandedNode*> v;
-    for(auto& elem : newChains)
+    for(auto elem : newChains)
     {
         if(isAvailable(graph,p->origin,elem.second)!=nullptr) continue;
-        // newNode = new TimeExpandedNode();// = new TimeExpandedNode(p->origin, elem.second, p->tgts);
-        // newNode->ExpandedNode(p->origin, elem.second, p->tgts);
+        TimeExpandedNode * newNode = new TimeExpandedNode();
         newNode->setTENode(p->origin);
         newNode->time = elem.second;
         newNode->tgts=p->tgts;
         if(graph.size() <= elem.first)
         {
+            std::vector<TimeExpandedNode*> v;
             v.push_back(newNode);
             graph.push_back(v);
             result.push_back(make_pair(graph.size() - 1, 0));
@@ -91,15 +89,15 @@ std::vector<std::pair<int, int>>insert(std::vector<std::vector<TimeExpandedNode*
                 result.push_back(make_pair(elem.first,graph.at(elem.first).size() -1));
             }
             else{
+                std::vector<TimeExpandedNode*> v;
                 v.push_back(newNode);
                 graph.insert(graph.begin( ) + elem.first,1, v);
-                result.push_back(make_pair(elem.first, 0));
+                result.push_back(std::make_pair(elem.first, 0));
             }
 
         }
-        v.clear();
+
     }
-    // free(newNode);
     return result;
 }
 bool checkInsertion(std::vector<std::vector<TimeExpandedNode*>> graph, 
@@ -117,37 +115,17 @@ bool checkResult(std::vector<std::vector<TimeExpandedNode*>> graph,
     std::vector<std::pair<int, int>> newPositions,
     TimeExpandedNode* p
 ){
-    // int i = 0;
-	// for(int j = 0; j < newChains.size(); j++){
-    //     std::pair<int, double> elem = newChains[j];
-	// 	std::pair<int, int> pos = newPositions[i];
-	// 	if(!graph.at(pos.first).at(pos.second)->origin->equals(p->origin) || 
-	// 		graph.at(pos.first).at(pos.second)->time != elem.second
-	// 		){
-	// 		return false;
-	// 	}
-    //     if(i == newPositions.size()) continue;
-	// 	i++;
-	// }
-	// return true;
-
     int i = 0;
 	for(auto elem : newChains){
-		std::pair<int, int>  pos = newPositions.at(i);
-        if(!graph.at(pos.first).at(pos.second)->origin->equals(p->origin)) {
-            cout<< "origin error:\n";
-            graph.at(pos.first).at(pos.second)->origin->printPoint(); cout<< "\n";
-            p->origin->printPoint() ;cout<< "\n";
-            return false;
-        }
-		if(graph.at(pos.first).at(pos.second)->time != elem.second){
-            cout<< "time error:\n" << graph.at(pos.first).at(pos.second)->time << " " << elem.second<<"\n";
+		auto& pos = newPositions.at(i);
+		if(!graph.at(pos.first).at(pos.second)->origin->equals(p->origin) || 
+			graph.at(pos.first).at(pos.second)->time != elem.second
+			){
 			return false;
 		}
 		i++;
 	}
 	return true;
-
 }
 
 //// cau d
@@ -195,7 +173,7 @@ public:
     PausingShape( ){ d = 0; name = "artificial"; time = 0;}
     PausingShape(double time) {
         this->time = time;
-        name = "artificial"; 
+                name = "artificial"; 
     }
     PausingShape(Shape *s, std::string name){
         this->name = name;
@@ -217,20 +195,31 @@ std::vector<std::vector<TimeExpandedNode*>> connectChains(
 std::vector<std::vector<TimeExpandedNode*>> graph,
     std::vector<std::pair<int, int>> newOrder
 ) {
+    // printf("graph size before connect: %ld\n", graph.size());
+    // printf("new order size: %ld\n", newOrder.size());
     for(int i = 0; i < newOrder.size() - 1; i++){
         int i1Prev = newOrder.at(i).first;
         int i2Prev = newOrder.at(i).second;
         int j1Next = newOrder.at(i+1).first;
         int j2Next = newOrder.at(i+1).second;
+        // printf("%d %d %d %d\n", i1Prev, i2Prev, j1Next, j2Next);
+        // printf("graph at j1Prev 's size: %ld\n", graph.at(i1Prev).size());
+        // printf("graph at j1Next 's size: %ld\n\n", graph.at(j1Next).size());
+        if(i1Prev >= graph.size() || j1Next >= graph.size()) {
+            continue;
+        }
+        if(i2Prev >= graph.at(i1Prev).size() || j2Next >= graph.at(j1Next).size()) {
+            continue;
+        }
         TimeExpandedNode* prev = graph.at(i1Prev).at(i2Prev);
         TimeExpandedNode* next = graph.at(j1Next).at(j2Next);
-        PausingShape* s0 = new PausingShape(next->time - prev->time);
+        auto s0 = new PausingShape(next->time - prev->time);
         s0->start = prev->origin; 
         s0->end = next->origin;
         prev->tgts.push_back(std::make_pair(next, s0));
         next->srcs.push_back(std::make_pair(prev, s0));
-        // free(s0);
     }
+    // printf("graph size after connect: %ld\n", graph.size());
     return graph;
 
 }

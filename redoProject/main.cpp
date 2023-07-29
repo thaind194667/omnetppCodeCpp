@@ -162,8 +162,8 @@ void insertToStruct() {
         Point *lastPoint = new Point();
         lastPoint->setPoint(a.Point2.first,a.Point2.second);
         if(!firstPoint->equals(lastPoint)){
-         shape->setPoint(firstPoint, lastPoint);
-         shape->setName(a.name);
+        shape->setPoint(firstPoint, lastPoint);
+        shape->setName(a.name);
          //cout<<shape->name<<endl;
             if (!checkPoint(firstPoint, P))
             {
@@ -188,59 +188,6 @@ void insertToStruct() {
         }
         //
     }
-    /*while (!input.eof())
-    {
-    	
-        string str;
-        getline(input, str);
-        //cout<<str<<endl;
-        if (strSmatch(str, "[_A-Z0-9]+(?= )") == "")
-            break;
-        Shape *shape = new Shape();
-  
-        shape->setName(strSmatch(str, "[_A-Z0-9]+(?= )"));
-        //cout<<shape->name<<endl;
-        string point_1 = strSmatch(str, "[_][-0-9.,]+(?=_)");
-        string point_2 = strSmatch(str, "[^_A-Z ][-0-9.,]+(?=$)");
-
-        string s1 = "[^_ ][-0-9.,]+(?=,)";
-        string s2 = "[^_,][-0-9.]+(?=$)";
-        string s3 = "[^_,][-0-9.]+(?=$)";
-
-        Point *firstPoint = new Point();
-        firstPoint->setPoint(std::stof(strSmatch(point_1, s1)),
-                             std::stof(strSmatch(point_1, s2)));
-        firstPoint->printPoint();
-        Point *lastPoint = new Point();
-        lastPoint->setPoint(std::stof(strSmatch(point_2, s1)),
-                            std::stof(strSmatch(point_2, s3)));
-        lastPoint->printPoint();
-	if(firstPoint->equals(lastPoint)){
-	    //cout<<"DEBUG "<<__FILE__<<":"<<__LINE__<<endl;
-	    continue;
-	}
-        shape->setPoint(firstPoint, lastPoint);
-        if (!checkPoint(firstPoint, P))
-        {
-            P.push_back(firstPoint);
-            TimeExpandedNode *n1 = new TimeExpandedNode();
-            n1->setTENode(firstPoint);
-            allTENs.at(0).push_back(n1);
-        }
-
-        if (!checkPoint(lastPoint, P))
-        {
-            P.push_back(lastPoint);
-            TimeExpandedNode *n2 = new TimeExpandedNode();
-            n2->setTENode(lastPoint);
-            allTENs.at(0).push_back(n2);
-        }
-
-        if (!checkShape(shape, S))
-        {
-            S.push_back(shape);
-        }
-    }*/
 
     for (TimeExpandedNode *n : allTENs.at(0))
     {
@@ -418,10 +365,10 @@ void runBai5() {
     for(auto& it : allTENs){
         cout<<it.size()<<endl;
     }
-    vector<Point*> points;
-    for(TimeExpandedNode* node: allTENs.at(0)) {
-        points.push_back(node->origin);
-    }
+    // vector<Point*> points;
+    // for(TimeExpandedNode* node: allTENs.at(0)) {
+    //     points.push_back(node->origin);
+    // }
 	cout<< "Done step 1\n";
 
     //// Buoc2
@@ -456,7 +403,7 @@ void runBai5() {
 	cout<< "Done step 7\n";
 
     //// Buoc8
-    connectAllChains(allTENs, points, H, v);
+    connectAllChains(allTENs, P, H, v);
     cout << "Done step 8\n";
 
     //// Buoc9

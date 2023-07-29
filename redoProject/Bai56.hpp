@@ -11,8 +11,9 @@ TimeExpandedNode* isAvailable(
     std::vector<std::vector<TimeExpandedNode*>> graph, 
     Point* origin
 ) {
-    TimeExpandedNode* res = new TimeExpandedNode;// = (TimeExpandedNode*)malloc(sizeof(TimeExpandedNode));
-    double minTime = 999999;
+    TimeExpandedNode* res;// = (TimeExpandedNode*)malloc(sizeof(TimeExpandedNode));
+    const double MINTIME = 999999;
+    double minTime = MINTIME;
     // res->time = 9999;
     for(int i = 0; i < graph.size(); i++){
         vector<TimeExpandedNode*> v = graph.at(i);
@@ -20,12 +21,17 @@ TimeExpandedNode* isAvailable(
             TimeExpandedNode* temp = v.at(j);
             if(temp->origin->equals(origin) && temp->time < minTime) {
                 res = temp;
+                res->origin = temp->origin;
+                res->name = temp->name;
+                res->layer = temp->layer;
+                res->tgts = temp->tgts;
+                res->srcs = temp->srcs;
                 minTime = temp->time;
             }
         }
     }
-    cout << "time when done: " << res->time << "\n";
-    if(minTime != 9999)
+    // cout << "time when done: " << res->time << "\n";
+    if(minTime < MINTIME)
         return res;
     else return nullptr;
 }
@@ -36,23 +42,33 @@ std::vector<std::vector<TimeExpandedNode*>> connectAllChains(
     std::vector<Point*> points,
     double H, double v
 ) {
+    printf("points 's size: %ld\n", points.size());
     for(int i = 0; i < points.size(); i++){
+        int j = 0;
         Point* origin = points[i];
-        origin->printPoint();
+        // origin->printPoint();
         TimeExpandedNode* temp = isAvailable(graph, origin);
+        // printf("%d ", j);j++;
         if(temp == nullptr) {
-            cout << "Not avaible\n";
+            // cout << "Not avaible\n";
+            continue;
         }
         std::vector<std::tuple<int, int, double>> chains = getChains(graph, origin);
+        // printf("%d %d\n", j, chains.size());j++;
         std::vector<std::pair<int, double>> newChains = createNewChains(chains, graph, H, v);
+        // printf("%d %d\n", j, newChains.size());j++;
         std::vector<std::pair<int, int>> newPos = insert(graph, newChains, temp);
+        // printf("%d %d\n", j, newPos.size());j++;
         assert(checkInsertion(graph, newChains, temp));
         assert(checkResult(graph, newChains, newPos, temp));
-        for(auto elem : newPos) {
+        for(auto& elem : newPos) {
             spread(graph, elem.first, elem.second, H);
         }
+        // printf("%d\n", j);j++;
         std::vector<std::pair<int, int>> newOrder = merge(chains, newPos);
-        connectChains(graph, newOrder);
+        // printf("%d %d\n", j, newOrder.size());j++;
+        std::vector<std::vector<TimeExpandedNode*>>conchains = connectChains(graph, newOrder);
+        // printf("%d\n", j);j++;
     }
     return graph;
 }
