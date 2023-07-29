@@ -1,4 +1,4 @@
-1. Run in terminal/shell/console: 
-    make run
-2. Run bai3: make bai3
-3. Run bai4: make bai4
+- Main folder now is redoProject:
+- Run project:
+1. Open main.cpp, uncomment funcion runBai3/runBai4/runBai5 to run ex3/4/5
+2. Run in terminal/shell/console: make run
