@@ -122,7 +122,7 @@ public:
            return index;             
     }
 
-    bool endOfLane(){ /// add in bai6
+    bool endOfLane(){ /// add in bai6-a
         if(this->tgts.size() <= 1) return true;
         for(int i = 0; i < this->srcs.size(); i++){
             Shape* shape = this->srcs.at(i).second;
@@ -142,7 +142,7 @@ public:
         return false;
     }
 
-    std::string isStation(std::string stations) { /// add in bai6
+    std::string isStation(std::string stations) { /// add in bai6-b
         for(int i = 0; i < this->srcs.size(); i++){
             auto shape = this->srcs.at(i).second;
             auto name = shape->name;
@@ -156,11 +156,11 @@ public:
 
     }
 
-    virtual TimeExpandedNode* transform(TimeExpandedNode* node) {      /// add in bai6
+    virtual TimeExpandedNode* transform(TimeExpandedNode* node) {      /// add in bai6-d
         return this;
     }
 
-    virtual void connect2ArtificialStation(TimeExpandedNode* node){ //// add in bai6
+    virtual void connect2ArtificialStation(TimeExpandedNode* node){ //// add in bai6-d
 
     } 
 

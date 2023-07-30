@@ -4,4 +4,6 @@
 ./.vscode/
 ./bai3
 ./bai4
-./main
+
+./redoProject/main
+./redoProject/main.exe

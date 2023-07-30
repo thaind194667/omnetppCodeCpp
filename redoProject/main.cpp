@@ -149,7 +149,7 @@ void assertCheck() {
 void insertToStruct() {
     allTENs.push_back(tempTENs);
 
-    //ifstream input("/mnt/d/MinGW64/AllParts.txt");
+    //ifstream input("./AllParts.txt");
     //input.is_open();
     int counter = 0;
     makeallpart();
@@ -390,11 +390,12 @@ void runBai5() {
 
 	//// Buoc5
 	std::vector<std::pair<int, int>> redundants = filter(allTENs);
+    cout << "redundants.size():" << redundants.size() << endl;
 	remove(redundants, allTENs);
 	cout<< "Done step 5\n";
 
 	//// Buoc6
-	// a->assertCheck();
+	// assertCheck();
 	cout<< "Done step 6\n";
 
 	//// Buoc7
@@ -408,11 +409,12 @@ void runBai5() {
 
     //// Buoc9
 	redundants = filter(allTENs);
+    cout << "redundants.size():" << redundants.size() << endl;
 	remove(redundants, allTENs);
 	cout<< "Done step 9\n";
 
 	//// Buoc10
-	// a->assertCheck();
+	// assertCheck();
 	cout<< "Done step 10\n";
 
 	//// Buoc11
@@ -421,7 +423,7 @@ void runBai5() {
 	cout<< "Done step 11\n";
 
 	//// Buoc12
-	cout << "TENODES's size after run bai3: \n";
+	cout << "TENODES's size after run bai5: \n";
     for(auto& it : allTENs) {
         cout<<it.size()<<endl;
     }
@@ -430,14 +432,135 @@ void runBai5() {
 	cout<< "Done Bai 5\n";
 }
 
-int main()
+void runBai6() {
+    double H = 6;
+    double v = 1;
+    //// Buoc1 (doc Allpart.txt)
+    cout << "Before bai6: \n";
+    for(auto& it : allTENs){
+        cout<<it.size()<<endl;
+    }
+    // vector<Point*> points;
+    // for(TimeExpandedNode* node: allTENs.at(0)) {
+    //     points.push_back(node->origin);
+    // }
+	cout<< "Done step 1\n";
+
+    //// Buoc2
+    assertCheck();
+	cout<< "Done step 2\n";
+
+    //// Buoc3
+	vector<int> initializations = getStartedNodes(allTENs);
+	cout << "initializations.size() : " << initializations.size()<< "\n";
+	cout<< "Done step 3\n";
+
+    // cout << initializations.size();
+    //// Buoc4
+	for(auto index : initializations){
+		// cout<< 
+		spread(allTENs, 0, index, H);
+	}
+	cout<< "Done step 4\n";
+
+	//// Buoc5
+	std::vector<std::pair<int, int>> redundants = filter(allTENs);
+    cout << "redundants.size():" << redundants.size() << endl;
+	remove(redundants, allTENs);
+	cout<< "Done step 5\n";
+
+	//// Buoc6
+	// assertCheck();
+	cout<< "Done step 6\n";
+
+	//// Buoc7
+	for(auto& it: allTENs)
+        assertTime(it,1);
+	cout<< "Done step 7\n";
+
+    //// Buoc8
+    connectAllChains(allTENs, P, H, v);
+    cout << "Done step 8\n";
+
+    //// Buoc9
+    string* stations;
+    std::map<std::string, std::vector<ArtificialStation*>>
+        mapArtificialStations = getTimeWindows("./intinerary.txt", H, stations);
+    cout << "mapArtificialStations.size :" << mapArtificialStations.size() << "\n";
+    cout << "Done step 9\n";
+
+    //// Buoc10
+    for(int i = 0; i < allTENs.size() ; i++){
+        auto v = allTENs.at(i);
+        for(int j = 0; j < v.size( ); j++){
+            auto temp = v.at(j);
+            if(instanceof<Station>(temp)){
+                std::string name = temp->name;
+                auto foundit = mapArtificialStations.find(name);
+                if(foundit != mapArtificialStations.end( ) ){
+                    auto allArStations = mapArtificialStations[name];
+                    for(auto elem : allArStations){
+                        elem->createConnection(temp);
+                    }
+                }
+            }
+        }
+    }
+    cout<< "Done step 10\n";
+
+    //// Buoc11
+    for (const auto& el : mapArtificialStations){ 
+    auto v = el.second;
+        for(auto elem : v){
+            insert(allTENs, elem);
+        }
+    }
+
+    cout<< "Done step 11\n";
+
+
+    //// Buoc12
+	redundants = filter(allTENs);
+    cout << "redundants.size():" << redundants.size() << endl;
+	remove(redundants, allTENs);
+	cout<< "Done step 12\n";
+
+	//// Buoc13
+	// assertCheck();
+	cout<< "Done step 13\n";
+
+	//// Buoc14
+	for(auto& it: allTENs)
+        assertTime(it,1);
+	cout<< "Done step 14\n";
+
+	//// Buoc15
+	cout << "TENODES's size after run bai6: \n";
+    for(auto& it : allTENs) {
+        cout<<it.size()<<endl;
+    }
+	cout<< "Done step 15\n";
+
+	cout<< "Done Bai 6\n";
+}
+
+int main(int argc, char *argv[])
 {
     insertToStruct();
-    // if(strcmp(argv[1], "3") == 0) {
-    //     runBai3();
-    // }
-    // else if(strcmp(argv[1], "4") == 0)
-    runBai4();
-    // else if(strcmp(argv[1], "5") == 0)
-    // runBai5();
+    if(strcmp(argv[1], "3") == 0) {
+        cout << "Running ex3\n";
+        runBai3();
+    }
+    else if(strcmp(argv[1], "4") == 0) {
+        cout << "Running ex4\n";
+        runBai4();
+    }
+    else if(strcmp(argv[1], "5") == 0) {
+        cout << "Running ex5\n";
+        runBai5();
+    }
+    else if(strcmp(argv[1], "6") == 0) {
+        cout << "Running ex6\n";
+        runBai6();
+    }
 }

@@ -6,6 +6,13 @@
 
 using namespace std;
 
+////// Bai6-e
+template<typename Base, typename T>
+inline bool instanceof(const T *ptr) { 
+    return dynamic_cast<const Base*>(ptr) != nullptr;
+}
+
+
 /////// Bai5 - a
 TimeExpandedNode* isAvailable(
     std::vector<std::vector<TimeExpandedNode*>> graph, 
@@ -118,6 +125,17 @@ void replaceStation (std::vector<std::vector<TimeExpandedNode*>> graph, std::str
     }
 }
 
+///// Bai6-f
+class ArtificialShape : public PausingShape 
+{
+public:
+//Phương thức getTime được ghi đè như sau
+    ArtificialShape(double time) {this->time = time;}
+    double getTime( ){
+        return this->time;
+    }
+};
+
 //// Bai6 - e1 ?
 class ArtificialStation: public Station {
 public:
@@ -132,111 +150,72 @@ public:
         this->tardiness = bestTime + amplitude;
     }
 
+    void createConnection(TimeExpandedNode* node){   /// add in bai6-g
+        ArtificialShape* aShape;
+        if(instanceof<Station>(node) && !instanceof<ArtificialStation>(node)){
+            if(node->name == this->name){
+                //để gọi được hàm max cần dùng thư viện cmath
+                double penaltyT = max(this->earliness - node->time, 0.0);
+                penaltyT = max(penaltyT, node->time - this->tardiness); 
+                aShape = new ArtificialShape(penaltyT);
+                node->tgts.push_back(std::make_pair(this, aShape));
+                this->srcs.push_back(std::make_pair(node, aShape));
+            }
+        }
+    }
+
+
 };
 
 ///// Bai6 - d
-//  std::map<std::string, std::vector<ArtificialStation*>> getTimeWindows(
-//     std::string fileName, double H, std::string *stations
-// ) {
-//     ifstream inFile;
-//     // open the file stream
-//     inFile.open("./intinerary.txt");
-//     std::map<std::string, std::vector<ArtificialStation*>> result; 
-//     string line;
-//     while(getline(inFile, line)){
-//         // line = nội dung của một dòng
-//         bestTime = getBestTime(line);
-//         amplitude = getAmplitude(line);
-//         name = getName(line);
-//                 std::vector<ArtificialStation*> values ;
-//         period = getPeriod(line);
-//         for(int i = 0; i < H; i += period){
-//             values.push_back(new ArtificialStation(name, bestTime + i, amplitude));
-//         }
-//                 if(values.size( ) > 0){
-//                             result.insert({name, values});
-//                             stations->append("$" + name + "$");
-//                 }
-//     }
-//     return result;
+vector<string> splitString(string S, char delimiter) {
+    string tmp = "";
+    vector<string> result;
+    for(int i = 0; i < S.size(); i++) {
+        if(S[i] == delimiter) {
+            if(tmp != "") {
+                result.push_back(tmp);
+                tmp = "";
+            }
+        }
+        else tmp += S[i];
+    }
+    if(tmp != "") result.push_back(tmp);
+    return result;
+}
 
-// }
+std::map<std::string, std::vector<ArtificialStation*>> getTimeWindows(
+    std::string fileName, double H, std::string *stations
+) {
+    ifstream inFile;
+    // open the file stream
+    inFile.open(fileName);
+    std::map<std::string, std::vector<ArtificialStation*>> result; 
+    string line;
+    while(getline(inFile, line)){
+        // line = nội dung của một dòng
+        vector<string> partsOfLine = splitString(line, ' ');
+        printf("parts of line size: %ld \n", partsOfLine.size());
+        for(int i = 0; i < partsOfLine.size(); i++) {
+            cout<< partsOfLine[i]<< " ";
+        }cout<< "\n";
+        string name = partsOfLine[0];
+        int period = std::stoi(partsOfLine[5]);
+        double bestTime = std::stod(partsOfLine[6]);
+        double amplitude = std::stod(partsOfLine[7]);
+        cout<< name << " " << period << " " << bestTime << " " << amplitude << "\n";
+        std::vector<ArtificialStation*> values;
+        for(int i = 0; i < H; i += period){
+            values.push_back(new ArtificialStation(name, bestTime + i, amplitude));
+        }
+        if(values.size() > 0){
+            result.insert({name, values});
+            stations->append("$" + name + "$");
+        }
+    }
+    return result;
 
+}
 
-// void runBai5() {
-//     double H = 6;
-//     double v = 1;
-//     //// Buoc1 (doc Allpart.txt)
-//     TENodeAlgorithm* a = new TENodeAlgorithm();
-//     a->runRead();
-//     vector<Point*> points;
-//     for(TimeExpandedNode* node: allTENs.at(0)) {
-//         points.push_back(node->origin);
-//     }
-// 	cout<< "Done step 1\n";
-
-//     //// Buoc2
-//     a->assertCheck();
-// 	cout<< "Done step 2\n";
-
-//     //// Buoc3
-// 	vector<int> initializations = getStartedNodes(allTENs);
-// 	cout<< "Done step 3\n";
-
-//     cout << initializations.size();
-// 	for(auto index : initializations){
-// 		// cout<< 
-// 		spread(allTENs, index, H, v);
-// 	}
-// 	cout<< "Done step 4\n";
-
-// 	//// Buoc5
-// 	std::vector<std::pair<int, int>> redundants = filter(allTENs, v);
-// 	remove(redundants, allTENs);
-// 	cout<< "Done step 5\n";
-
-// 	//// Buoc6
-// 	a->assertCheck();
-// 	cout<< "Done step 6\n";
-
-// 	//// Buoc7
-// 	assertTime(allTENs, 0);
-// 	cout<< "Done step 7\n";
-
-//     //// Buoc8
-//     connectAllChains(allTENs, points, H, v);
-//     cout << "Done step 8\n";
-
-//     //// Buoc9
-// 	redundants = filter(allTENs, v);
-// 	remove(redundants, allTENs);
-// 	cout<< "Done step 9\n";
-
-// 	//// Buoc10
-// 	a->assertCheck();
-// 	cout<< "Done step 10\n";
-
-// 	//// Buoc11
-// 	assertTime(allTENs, 0);
-// 	cout<< "Done step 11\n";
-
-// 	//// Buoc12
-// 	int count_TEN = 0;
-//     for (vector<TimeExpandedNode *> it : allTENs)
-//     {
-//         for (TimeExpandedNode *TENode : it)
-//         {
-//             count_TEN++;
-//         }
-//     }
-//     cout << "Number of TENode in allTENS: " << count_TEN << endl;
-// 	cout<< "Done step 12\n";
-
-// 	cout<< "Done Bai 5\n";
-// }
-
-// void runBai6() {
-
-// }
 
 #endif
