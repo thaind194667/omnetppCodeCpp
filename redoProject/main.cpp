@@ -390,7 +390,7 @@ void runBai5() {
 
 	//// Buoc5
 	std::vector<std::pair<int, int>> redundants = filter(allTENs);
-    cout << "redundants.size():" << redundants.size() << endl;
+    cout << "redundants.size(): " << redundants.size() << endl;
 	remove(redundants, allTENs);
 	cout<< "Done step 5\n";
 
@@ -409,7 +409,7 @@ void runBai5() {
 
     //// Buoc9
 	redundants = filter(allTENs);
-    cout << "redundants.size():" << redundants.size() << endl;
+    cout << "redundants.size(): " << redundants.size() << endl;
 	remove(redundants, allTENs);
 	cout<< "Done step 9\n";
 
@@ -433,7 +433,7 @@ void runBai5() {
 }
 
 void runBai6() {
-    double H = 6;
+    double H = 5;
     double v = 1;
     //// Buoc1 (doc Allpart.txt)
     cout << "Before bai6: \n";
@@ -465,7 +465,7 @@ void runBai6() {
 
 	//// Buoc5
 	std::vector<std::pair<int, int>> redundants = filter(allTENs);
-    cout << "redundants.size():" << redundants.size() << endl;
+    cout << "redundants.size(): " << redundants.size() << endl;
 	remove(redundants, allTENs);
 	cout<< "Done step 5\n";
 
@@ -483,10 +483,11 @@ void runBai6() {
     cout << "Done step 8\n";
 
     //// Buoc9
-    string* stations;
+    string* stations = new string();
     std::map<std::string, std::vector<ArtificialStation*>>
         mapArtificialStations = getTimeWindows("./intinerary.txt", H, stations);
-    cout << "mapArtificialStations.size :" << mapArtificialStations.size() << "\n";
+    cout << "mapArtificialStations.size : " << mapArtificialStations.size() << "\n";
+    cout << "stations string: " << *stations << "\n";
     cout << "Done step 9\n";
 
     //// Buoc10
@@ -497,7 +498,7 @@ void runBai6() {
             if(instanceof<Station>(temp)){
                 std::string name = temp->name;
                 auto foundit = mapArtificialStations.find(name);
-                if(foundit != mapArtificialStations.end( ) ){
+                if(foundit != mapArtificialStations.end() ){
                     auto allArStations = mapArtificialStations[name];
                     for(auto elem : allArStations){
                         elem->createConnection(temp);
@@ -521,7 +522,7 @@ void runBai6() {
 
     //// Buoc12
 	redundants = filter(allTENs);
-    cout << "redundants.size():" << redundants.size() << endl;
+    cout << "redundants.size(): " << redundants.size() << endl;
 	remove(redundants, allTENs);
 	cout<< "Done step 12\n";
 

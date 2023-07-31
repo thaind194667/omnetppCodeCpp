@@ -188,6 +188,7 @@ std::map<std::string, std::vector<ArtificialStation*>> getTimeWindows(
     std::string fileName, double H, std::string *stations
 ) {
     ifstream inFile;
+    string now = "";
     // open the file stream
     inFile.open(fileName);
     std::map<std::string, std::vector<ArtificialStation*>> result; 
@@ -195,7 +196,7 @@ std::map<std::string, std::vector<ArtificialStation*>> getTimeWindows(
     while(getline(inFile, line)){
         // line = nội dung của một dòng
         vector<string> partsOfLine = splitString(line, ' ');
-        printf("parts of line size: %ld \n", partsOfLine.size());
+        printf("parts of line :  ");
         for(int i = 0; i < partsOfLine.size(); i++) {
             cout<< partsOfLine[i]<< " ";
         }cout<< "\n";
@@ -203,16 +204,19 @@ std::map<std::string, std::vector<ArtificialStation*>> getTimeWindows(
         int period = std::stoi(partsOfLine[5]);
         double bestTime = std::stod(partsOfLine[6]);
         double amplitude = std::stod(partsOfLine[7]);
-        cout<< name << " " << period << " " << bestTime << " " << amplitude << "\n";
+        printf("name: %s, period: %d, bestTime: %lf, amplitude: %lf\n", name.c_str(), period, bestTime, amplitude);
         std::vector<ArtificialStation*> values;
         for(int i = 0; i < H; i += period){
             values.push_back(new ArtificialStation(name, bestTime + i, amplitude));
         }
+        // cout << values.size() << "\n";
         if(values.size() > 0){
             result.insert({name, values});
-            stations->append("$" + name + "$");
+            now += "$" + name + "$";
         }
     }
+    *stations = now;
+    cout << "done read file intinerary.txt\n";
     return result;
 
 }
