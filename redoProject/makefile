@@ -19,3 +19,7 @@ bai5:
 bai6:
 	make run
 	./main 6
+
+bai7:
+	make run
+	./main 7

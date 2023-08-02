@@ -11,6 +11,7 @@
 #include "Bai3.hpp"
 #include "Bai4.hpp"
 #include "Bai56.hpp"
+#include "Bai7.hpp"
 #include "readxml.hpp"
 
 using namespace std;
@@ -545,6 +546,136 @@ void runBai6() {
 	cout<< "Done Bai 6\n";
 }
 
+void runBai7() {
+    double H = 5;
+    double v = 1;
+    //// Buoc1 (doc Allpart.txt)
+    cout << "Before bai7: \n";
+    for(std::vector<TimeExpandedNode *> it : allTENs){
+        cout<<it.size()<<endl;
+    }
+	cout<< "Done step 1\n";
+
+    //// Buoc2
+    assertCheck();
+	cout<< "Done step 2\n";
+
+    //// Buoc3
+	vector<int> initializations = getStartedNodes(allTENs);
+	cout << "initializations.size() : " << initializations.size()<< "\n";
+	cout<< "Done step 3\n";
+
+    // cout << initializations.size();
+    //// Buoc4
+	for(auto index : initializations){
+		// cout<< 
+		spread(allTENs, 0, index, H);
+	}
+	cout<< "Done step 4\n";
+
+	//// Buoc5
+	std::vector<std::pair<int, int>> redundants = filter(allTENs);
+    cout << "redundants.size(): " << redundants.size() << endl;
+	remove(redundants, allTENs);
+	cout<< "Done step 5\n";
+
+	//// Buoc6
+	// assertCheck();
+	cout<< "Done step 6\n";
+
+	//// Buoc7
+	for(auto& it: allTENs)
+        assertTime(it,1);
+	cout<< "Done step 7\n";
+
+    //// Buoc8
+    connectAllChains(allTENs, P, H, v);
+    cout << "Done step 8\n";
+
+    //// Buoc9
+    string* stations = new string();
+    std::map<std::string, std::vector<ArtificialStation*>>
+        mapArtificialStations = getTimeWindows("./intinerary.txt", H, stations);
+    cout << "mapArtificialStations.size : " << mapArtificialStations.size() << "\n";
+    cout << "stations string: " << *stations << "\n";
+    cout << "Done step 9\n";
+
+    //// Buoc10
+    for(int i = 0; i < allTENs.size() ; i++){
+        auto v = allTENs.at(i);
+        for(int j = 0; j < v.size( ); j++){
+            auto temp = v.at(j);
+            if(instanceof<Station>(temp)){
+                std::string name = temp->name;
+                auto foundit = mapArtificialStations.find(name);
+                if(foundit != mapArtificialStations.end() ){
+                    auto allArStations = mapArtificialStations[name];
+                    for(auto elem : allArStations){
+                        elem->createConnection(temp);
+                    }
+                }
+            }
+        }
+    }
+    cout<< "Done step 10\n";
+
+    //// Buoc11
+    for (const auto& el : mapArtificialStations){ 
+    auto v = el.second;
+        for(auto elem : v){
+            insert(allTENs, elem);
+        }
+    }
+    cout<< "Done step 11\n";
+
+
+    //// Buoc12
+	redundants = filter(allTENs);
+    cout << "redundants.size(): " << redundants.size() << endl;
+	remove(redundants, allTENs);
+	cout<< "Done step 12\n";
+
+	//// Buoc13
+    int x = 0;
+    int *autoIncreament = &x;
+    TENodesSize = 0;
+    for(std::vector<TimeExpandedNode *> it : allTENs){
+        // setKeyForGraph(it);
+        for(TimeExpandedNode* element : it){
+            assignKey(element, autoIncreament);
+        }
+        TENodesSize += it.size();
+        cout<<it.size()<<endl;
+    }
+    keySize = *autoIncreament;
+    cout << "TENodes size: " << TENodesSize << "\n";
+    cout << "KeySize: " << keySize << "\n";
+	cout<< "Done step 13\n";
+
+	//// Buoc14
+	// assertCheck();
+	cout<< "Done step 14\n";
+
+	//// Buoc15
+	for(auto& it: allTENs)
+        assertTime(it,1);
+	cout<< "Done step 15\n";
+
+	//// Buoc16
+	cout << "TENODES's size after run bai6: \n";
+    for(auto& it : allTENs) {
+        cout<<it.size()<<endl;
+    }
+	cout<< "Done step 16\n";
+
+	//// Buoc17
+    assertCheckKey(allTENs);
+    cout << "assert check key done\n";
+	cout<< "Done step 17\n";
+
+	cout<< "Done Bai 7\n";
+}
+
 int main(int argc, char *argv[])
 {
     insertToStruct();
@@ -563,5 +694,9 @@ int main(int argc, char *argv[])
     else if(strcmp(argv[1], "6") == 0) {
         cout << "Running ex6\n";
         runBai6();
+    }
+    else if(strcmp(argv[1], "7") == 0) {
+        cout << "Running ex7\n";
+        runBai7();
     }
 }

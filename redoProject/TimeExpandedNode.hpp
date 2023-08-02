@@ -16,9 +16,10 @@ public:
     vector<pair<TimeExpandedNode *, Shape *>> srcs;
     Point *origin;
     double time;
-    int layer;
     vector<pair<TimeExpandedNode *, Shape *>> tgts;
     string name = "";  /// add in bai6
+    // int layer; /// remove in bai7-a
+    int key = -1; /// add in bai7-a
 
     void setTENode(Point *point)
     {

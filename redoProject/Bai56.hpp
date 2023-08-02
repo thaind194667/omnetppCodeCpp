@@ -30,7 +30,7 @@ TimeExpandedNode* isAvailable(
                 res = temp;
                 res->origin = temp->origin;
                 res->name = temp->name;
-                res->layer = temp->layer;
+                // res->layer = temp->layer;
                 res->tgts = temp->tgts;
                 res->srcs = temp->srcs;
                 minTime = temp->time;
